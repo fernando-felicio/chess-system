@@ -7,7 +7,7 @@ import chess.pieces.King;
 import chess.pieces.Rook;
 
 public class ChessMatch {
-	
+
 	private Board board;
 	
 	public ChessMatch() {
@@ -15,14 +15,20 @@ public class ChessMatch {
 		initialSetup();
 	}
 	
-	public ChessPiece[][] getPieces(){
+	public ChessPiece[][] getPieces() {
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
-		for (int i =0; i < board.getRows(); i++) {
-			for (int j =0; j < board.getColumns(); j++) {
-				mat[i][j] = (ChessPiece) board.piece(i,j);
+		for (int i=0; i<board.getRows(); i++) {
+			for (int j=0; j<board.getColumns(); j++) {
+				mat[i][j] = (ChessPiece) board.piece(i, j);
 			}
 		}
 		return mat;
+	}
+	
+	public boolean[][] possibleMoves(ChessPosition sourcePosition) {
+		Position position = sourcePosition.toPosition();
+		validateSourcePosition(position);
+		return board.piece(position).possibleMoves();
 	}
 	
 	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
@@ -30,11 +36,11 @@ public class ChessMatch {
 		Position target = targetPosition.toPosition();
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
-		Piece capturedPiece = makeMovie(source, target);
-		return (ChessPiece) capturedPiece;
+		Piece capturedPiece = makeMove(source, target);
+		return (ChessPiece)capturedPiece;
 	}
 	
-	private Piece makeMovie(Position source, Position target) {
+	private Piece makeMove(Position source, Position target) {
 		Piece p = board.removePiece(source);
 		Piece capturedPiece = board.removePiece(target);
 		board.placePiece(p, target);
@@ -46,7 +52,7 @@ public class ChessMatch {
 			throw new ChessException("There is no piece on source position");
 		}
 		if (!board.piece(position).isThereAnyPossibleMove()) {
-			throw new ChessException("There is no possible moves for the chose piece");
+			throw new ChessException("There is no possible moves for the chosen piece");
 		}
 	}
 	
